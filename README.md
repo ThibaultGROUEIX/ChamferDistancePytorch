@@ -1,8 +1,15 @@
-Chamfer distance timings for records
+# Pytorch implementation of the chamfer distance.
 
-| 50 epoch AE_Atlasnet_25prim      | time(s) | memory(GB) |
-| -------------------------------- | ------- | ---------- |
-| without chamfer loss (just mean) | 20.46   | 4.08       |
-| with pytorch chamfer             | 24.86   | 8.80       |
-| with CUDA chamfer                | 20.90   | 4.08       |
+Include a *CUDA version*, and a *python version* with pytorch ops.
+
+
+Run 
+
+`python setup.py install`
+
+TODO:
+
+* Discuss behaviour of torch.min() and tensor.min() which causes issues in some pytroch versions
+* Make it multi-GPU
+* Provide better Unit-tests
 
