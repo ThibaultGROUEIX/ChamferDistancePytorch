@@ -9,7 +9,7 @@ Run
 
 TODO:
 
-* Discuss behaviour of torch.min() and tensor.min() which causes issues in some pytroch versions
+* Discuss behaviour of torch.min() and tensor.min() which causes issues in some pytorch versions
 * Make it multi-GPU
 * Provide better Unit-tests
 
