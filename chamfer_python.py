@@ -16,13 +16,25 @@ def NN_loss(x, y, dim=0):
 
 
 def distChamfer(a, b):
+    """
+    :param a: Pointclouds Batch x nul_points x dim
+    :param b:  Pointclouds Batch x nul_points x dim
+    :return:
+    -closest point on b of points from a
+    -closest point on a of points from b
+    -idx of closest point on b of points from a
+    -idx of closest point on a of points from b
+    Works for pointcloud of any dimension
+    """
     x, y = a, b
-    bs, num_points, points_dim = x.size()
-    xx = torch.bmm(x, x.transpose(2, 1))
-    yy = torch.bmm(y, y.transpose(2, 1))
+    bs, num_points_x, points_dim = x.size()
+    bs, num_points_y, points_dim = y.size()
+
+    xx = torch.pow(x, 2).sum(2)
+    yy = torch.pow(y, 2).sum(2)
     zz = torch.bmm(x, y.transpose(2, 1))
-    diag_ind = torch.arange(0, num_points).type(torch.cuda.LongTensor)
-    rx = xx[:, diag_ind, diag_ind].unsqueeze(1).expand_as(xx)
-    ry = yy[:, diag_ind, diag_ind].unsqueeze(1).expand_as(yy)
+    rx = xx.unsqueeze(1).expand(bs, num_points_y, num_points_x) # Diagonal elements xx
+    ry = yy.unsqueeze(1).expand(bs, num_points_x, num_points_y) # Diagonal elements yy
     P = rx.transpose(2, 1) + ry - 2 * zz
-    return torch.min(P, 1)[0], torch.min(P, 2)[0], torch.min(P, 1)[1], torch.min(P, 2)[1]
+    return torch.min(P, 2)[0], torch.min(P, 1)[0], torch.min(P, 2)[1].int(), torch.min(P, 1)[1].int()
+
