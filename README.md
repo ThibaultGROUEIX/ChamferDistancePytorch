@@ -6,6 +6,7 @@ Include a *CUDA version*, and a *python version* with pytorch ops.
 
 `python setup.py install`
 
+Supports multi-gpu
 Only support dimension 3
 
 ### Python Version
@@ -27,5 +28,4 @@ Supports any dimension
 #### TODO:
 
 * Discuss behaviour of torch.min() and tensor.min() which causes issues in some pytorch versions
-* Make it multi-GPU
 
