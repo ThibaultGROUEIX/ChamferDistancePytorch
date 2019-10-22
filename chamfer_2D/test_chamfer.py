@@ -1,15 +1,15 @@
 import torch
 import dist_chamfer_idx as ext
 import chamfer_python
-distChamfer = ext.chamferDist()
+distChamfer = ext.chamfer_2DDist()
 from torch.autograd import Variable
 import time
 
 
 def test_chamfer():
-    distChamfer = ext.chamferDist()
-    p1 = torch.rand(4, 100, 3).cuda()
-    p2 = torch.rand(4, 200, 3).cuda()
+    distChamfer = ext.chamfer_2DDist()
+    p1 = torch.rand(4, 100, 2).cuda()
+    p2 = torch.rand(4, 200, 2).cuda()
     points1 = Variable(p1, requires_grad=True)
     points2 = Variable(p2)
     dist1, dist2, idx1, idx2= distChamfer(points1, points2)
@@ -45,9 +45,9 @@ def test_high_dims():
     print(mydist1, mydist2, idx1, idx2)
 
 def timings():
-    distChamfer = ext.chamferDist()
-    p1 = torch.rand(32, 2000, 3).cuda()
-    p2 = torch.rand(32, 1000, 3).cuda()
+    distChamfer = ext.chamfer_2DDist()
+    p1 = torch.rand(32, 2000, 2).cuda()
+    p2 = torch.rand(32, 1000, 2).cuda()
     print("Start CUDA version")
     start = time.time()
     for i in range(1000):
@@ -71,5 +71,5 @@ def timings():
 
 
 timings()
-#test_chamfer()
+test_chamfer()
 #test_high_dims()

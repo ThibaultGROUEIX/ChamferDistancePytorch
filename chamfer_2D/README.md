@@ -4,10 +4,9 @@ Include a *CUDA version*, and a *python version* with pytorch ops.
 
 ### CUDA VERSION
 
-`chmod + x install.sh; ./install.sh`
+`python setup.py install`
 
-Only support dimension 2, 3 or 5
-Support multi-GPU
+Only support dimension 2 
 
 ### Python Version
 

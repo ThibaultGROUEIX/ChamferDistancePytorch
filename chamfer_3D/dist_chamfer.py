@@ -1,12 +1,17 @@
+import math
 from torch import nn
 from torch.autograd import Function
 import torch
-import chamfer_5D
+import sys
+from numbers import Number
+from collections import Set, Mapping, deque
+import chamfer_3D
 
-print("imported CUDA Chamfer 5D")
+print("imported CUDA Chamfer 3D")
+
 # Chamfer's distance module @thibaultgroueix
 # GPU tensors only
-class chamfer_5DFunction(Function):
+class chamfer_3DFunction(Function):
     @staticmethod
     def forward(ctx, xyz1, xyz2):
         batchsize, n, _ = xyz1.size()
@@ -25,12 +30,12 @@ class chamfer_5DFunction(Function):
         idx2 = idx2.to(device)
         torch.cuda.set_device(device)
 
-        chamfer_5D.forward(xyz1, xyz2, dist1, dist2, idx1, idx2)
+        chamfer_3D.forward(xyz1, xyz2, dist1, dist2, idx1, idx2)
         ctx.save_for_backward(xyz1, xyz2, idx1, idx2)
-        return dist1, dist2, idx1, idx2
+        return dist1, dist2
 
     @staticmethod
-    def backward(ctx, graddist1, graddist2, gradidx1, gradidx2):
+    def backward(ctx, graddist1, graddist2):
         xyz1, xyz2, idx1, idx2 = ctx.saved_tensors
         graddist1 = graddist1.contiguous()
         graddist2 = graddist2.contiguous()
@@ -41,15 +46,13 @@ class chamfer_5DFunction(Function):
 
         gradxyz1 = gradxyz1.to(device)
         gradxyz2 = gradxyz2.to(device)
-        chamfer_5D.backward(
-            xyz1, xyz2, gradxyz1, gradxyz2, graddist1, graddist2, idx1, idx2
-        )
+        chamfer_3D.backward(xyz1, xyz2, gradxyz1, gradxyz2, graddist1, graddist2, idx1, idx2)
         return gradxyz1, gradxyz2
 
-
-class chamfer_5DDist(nn.Module):
+class chamfer_3DDist(nn.Module):
     def __init__(self):
-        super(chamfer_5DDist, self).__init__()
+        super(chamfer_3DDist, self).__init__()
 
     def forward(self, input1, input2):
-        return chamfer_5DFunction.apply(input1, input2)
+        return chamfer_3DFunction.apply(input1, input2)
+
