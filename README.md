@@ -57,7 +57,7 @@ Original backbone from [Fei Xia](https://github.com/fxia22/pointGAN/blob/master/
 
 JIT cool trick from [Christian Miller](https://github.com/chrdiller)
 
-##Troubleshoot:
+### Troubleshoot:
 
 - `undefined symbol: Zxxxxxxxxxxxxxxxxx `:
 
