@@ -4,7 +4,7 @@ Include a *CUDA version*, and a *python version* with pytorch standard operation
 
 ### CUDA VERSION
 
-`python setup.py install`
+Compile with `python setup.py install`
 
 Supports multi-gpu
 Only support dimension 3. See other branches for dim 2 and 5.
