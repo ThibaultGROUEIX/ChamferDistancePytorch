@@ -19,8 +19,8 @@ Supports any dimension
 import torch
 import dist_chamfer_idx as ext
 distChamfer = ext.chamferDist()
-p1 = torch.rand(4, 100, 3).cuda()
-p2 = torch.rand(4, 200, 3).cuda()
+p1 = torch.rand(32, 1000, 3).cuda()
+p2 = torch.rand(32, 2000, 3).cuda()
 points1 = Variable(p1, requires_grad=True)
 points2 = Variable(p2)
 dist1, dist2, idx1, idx2= distChamfer(points1, points2)
@@ -38,8 +38,8 @@ git submodule add https://github.com/ThibaultGROUEIX/ChamferDistancePytorch
 
 ### Benchmark: 1000 * [forward + backward] pass
 
-* Input1 : 32 x 2000 x 3
-* Input2 : 32 x 1000 x 3
+* p1 : 32 x 2000 x 3
+* p2 : 32 x 1000 x 3
 
 |  | Timing (sec)    | Memory (GB)     |
 | ---------- | -------- | ------- |
