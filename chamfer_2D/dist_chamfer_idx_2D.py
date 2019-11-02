@@ -2,17 +2,17 @@ from torch import nn
 from torch.autograd import Function
 import torch
 import importlib
-chamfer_found = importlib.find_loader("chamfer") is not None
+chamfer_found = importlib.find_loader("chamfer_2D") is not None
 if not chamfer_found:
     ## Cool trick from https://github.com/chrdiller
     from torch.utils.cpp_extension import load
-    chamfer = load(name="chamfer",
+    chamfer = load(name="chamfer_2D",
           sources=["chamfer_cuda.cpp",
-                   "chamfer.cu"])
+                   "chamfer2D.cu"])
     print("Loaded JIT 2D CUDA chamfer distance")
 
 else:
-    import chamfer
+    import chamfer_2D
     print("Loaded compiled 2D CUDA chamfer distance")
 
 # Chamfer's distance module @thibaultgroueix
