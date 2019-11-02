@@ -2,11 +2,20 @@ import math
 from torch import nn
 from torch.autograd import Function
 import torch
-import sys
-from numbers import Number
-from collections import Set, Mapping, deque
-import chamfer_2D
-print("imported CUDA Chamfer 2D")
+import importlib
+chamfer_found = importlib.find_loader("chamfer") is not None
+if not chamfer_found:
+    ## Cool trick from https://github.com/chrdiller
+    from torch.utils.cpp_extension import load
+    chamfer = load(name="chamfer",
+          sources=["chamfer_cuda.cpp",
+                   "chamfer.cu"])
+    print("Loaded JIT 2D CUDA chamfer distance")
+
+else:
+    import chamfer
+    print("Loaded compiled 2D CUDA chamfer distance")
+
 
 
 # Chamfer's distance module @thibaultgroueix
