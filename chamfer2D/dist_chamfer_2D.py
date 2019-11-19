@@ -3,11 +3,11 @@ from torch.autograd import Function
 import torch
 import importlib
 import os
-chamfer_found = importlib.find_loader("chamfer2D") is not None
+chamfer_found = importlib.find_loader("chamfer_2D") is not None
 if not chamfer_found:
     ## Cool trick from https://github.com/chrdiller
     from torch.utils.cpp_extension import load
-    chamfer_2D = load(name="chamfer2D",
+    chamfer_2D = load(name="chamfer_2D",
                   sources=[
                       "/".join(os.path.abspath(__file__).split('/')[:-1] + ["chamfer_cuda.cpp"]),
                       "/".join(os.path.abspath(__file__).split('/')[:-1] + ["chamfer2D.cu"]),

@@ -1,5 +1,5 @@
 import torch
-import dist_chamfer_idx as ext
+import dist_chamfer_3D as ext
 import chamfer_python
 distChamfer = ext.chamfer_3DDist()
 from torch.autograd import Variable
@@ -7,7 +7,7 @@ import time
 
 
 def test_chamfer():
-    distChamfer = ext.chamfer_2DDist()
+    distChamfer = ext.chamfer_3DDist()
     p1 = torch.rand(4, 100, 3).cuda()
     p2 = torch.rand(4, 200, 3).cuda()
     points1 = Variable(p1, requires_grad=True)
@@ -15,14 +15,11 @@ def test_chamfer():
     dist1, dist2, idx1, idx2= distChamfer(points1, points2)
 
     loss = torch.sum(dist1)
-    print(loss)
     loss.backward()
-    print(points1.grad, points2.grad)
 
     mydist1, mydist2, myidx1, myidx2 = chamfer_python.distChamfer(points1, points2)
     d1 = (dist1 - mydist1) ** 2
     d2 = (dist2 - mydist2) ** 2
-    print(d1, d2)
     assert (
         torch.sum(d1) + torch.sum(d2) < 0.00000001
     ), "chamfer cuda and chamfer normal are not giving the same results"
@@ -32,6 +29,8 @@ def test_chamfer():
     assert (
             torch.norm(xd1.float()) + torch.norm(xd2.float()) == 0
     ), "chamfer cuda and chamfer normal are not giving the same results"
+    print("Unit test passed")
+
 
 def test_high_dims():
     distChamfer = ext.chamfer_2DDist()
@@ -48,7 +47,7 @@ def timings():
     distChamfer = ext.chamfer_3DDist()
     p1 = torch.rand(32, 2000, 3).cuda()
     p2 = torch.rand(32, 1000, 3).cuda()
-    print("Start CUDA version")
+    print("Timings : Start CUDA version")
     start = time.time()
     for i in range(1000):
         points1 = Variable(p1, requires_grad=True)
@@ -59,7 +58,7 @@ def timings():
     print(f"Ellapsed time is {time.time() - start} seconds.")
 
 
-    print("Start Pythonic version")
+    print("Timings : Start Pythonic version")
     start = time.time()
     for i in range(1000):
         points1 = Variable(p1, requires_grad=True)
@@ -70,6 +69,6 @@ def timings():
     print(f"Ellapsed time is {time.time() - start} seconds.")
 
 
-timings()
 test_chamfer()
+timings()
 #test_high_dims()
