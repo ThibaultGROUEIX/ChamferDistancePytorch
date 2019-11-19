@@ -60,6 +60,7 @@ JIT cool trick from [Christian Miller](https://github.com/chrdiller)
 - `undefined symbol: Zxxxxxxxxxxxxxxxxx `:
 
 --> Fix: Make sure to `import torch` before you `import chamfer`.
+--> Use pytorch.version >= 1.1.0
 
 #### TODO:
 
