@@ -7,7 +7,7 @@ Include a **CUDA** version, and a **PYTHON** version with pytorch standard opera
 Optionally compile with `python setup.py install` or don't : it will use JIT.
 
 Supports multi-gpu
-Build for 3D point clouds. See other repo branches for  2D and 5D point clouds.
+Build for 2D, 3D, 5D  point clouds.
 
 ### Python Version
 
@@ -33,8 +33,6 @@ dist1, dist2, idx1, idx2= distChamfer(points1, points2)
 ```shell
 git submodule add https://github.com/ThibaultGROUEIX/ChamferDistancePytorch
 ```
-
-
 
 ### Benchmark: 1000 * [forward + backward] pass
 

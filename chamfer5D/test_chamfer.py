@@ -1,15 +1,16 @@
 import torch
 import dist_chamfer_idx as ext
+distChamfer = ext.chamfer_5DDist()
 import chamfer_python
-distChamfer = ext.chamferDist()
+
 from torch.autograd import Variable
 import time
 
 
 def test_chamfer():
-    distChamfer = ext.chamferDist()
-    p1 = torch.rand(4, 100, 3).cuda()
-    p2 = torch.rand(4, 200, 3).cuda()
+    distChamfer = ext.chamfer_5DDist()
+    p1 = torch.rand(4, 100, 5).cuda()
+    p2 = torch.rand(4, 200, 5).cuda()
     points1 = Variable(p1, requires_grad=True)
     points2 = Variable(p2)
     dist1, dist2, idx1, idx2= distChamfer(points1, points2)
@@ -34,7 +35,7 @@ def test_chamfer():
     ), "chamfer cuda and chamfer normal are not giving the same results"
 
 def test_high_dims():
-    distChamfer = ext.chamferDist()
+    distChamfer = ext.chamfer_5DDist()
     p1 = torch.rand(4, 100, 5).cuda()
     p2 = torch.rand(4, 200, 5).cuda()
     points1 = Variable(p1, requires_grad=True)
@@ -45,12 +46,13 @@ def test_high_dims():
     print(mydist1, mydist2, idx1, idx2)
 
 def timings():
-    distChamfer = ext.chamferDist()
-    p1 = torch.rand(32, 2000, 3).cuda()
-    p2 = torch.rand(32, 1000, 3).cuda()
+    distChamfer = ext.chamfer_5DDist()
+    p1 = torch.rand(32, 244*244, 5).cuda()
+    p2 = torch.rand(32, 244*244, 5).cuda()
     print("Start CUDA version")
     start = time.time()
-    for i in range(1000):
+    for i in range(100):
+        print(i)
         points1 = Variable(p1, requires_grad=True)
         points2 = Variable(p2)
         mydist1, mydist2, idx1, idx2 = distChamfer(points1, points2)
@@ -61,7 +63,7 @@ def timings():
 
     print("Start Pythonic version")
     start = time.time()
-    for i in range(1000):
+    for i in range(100):
         points1 = Variable(p1, requires_grad=True)
         points2 = Variable(p2)
         mydist1, mydist2, idx1, idx2 = chamfer_python.distChamfer(points1, points2)
@@ -69,7 +71,6 @@ def timings():
         loss.backward()
     print(f"Ellapsed time is {time.time() - start} seconds.")
 
-
+test_chamfer()
 timings()
-#test_chamfer()
-#test_high_dims()
+# test_high_dims()
