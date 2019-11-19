@@ -1,5 +1,5 @@
 import torch
-import dist_chamfer_idx as ext
+import dist_chamfer_2D as ext
 import chamfer_python
 distChamfer = ext.chamfer_2DDist()
 from torch.autograd import Variable

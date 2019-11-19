@@ -2,13 +2,16 @@ from torch import nn
 from torch.autograd import Function
 import torch
 import importlib
-chamfer_found = importlib.find_loader("chamfer_3D") is not None
+import os
+chamfer_found = importlib.find_loader("chamfer3D") is not None
 if not chamfer_found:
     ## Cool trick from https://github.com/chrdiller
     from torch.utils.cpp_extension import load
-    chamfer = load(name="chamfer_3D",
-          sources=["chamfer_cuda.cpp",
-                   "chamfer3D.cu"])
+    chamfer_3D = load(name="chamfer3D",
+          sources=[
+              "/".join(os.path.abspath(__file__).split('/')[:-1] + ["chamfer_cuda.cpp"]),
+              "/".join(os.path.abspath(__file__).split('/')[:-1] + ["chamfer3D.cu"]),
+              ])
     print("Loaded JIT 3D CUDA chamfer distance")
 
 else:

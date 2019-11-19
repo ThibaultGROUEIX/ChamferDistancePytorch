@@ -1,25 +1,26 @@
-import math
 from torch import nn
 from torch.autograd import Function
 import torch
 import importlib
-chamfer_found = importlib.find_loader("chamfer_5D") is not None
+import os
+chamfer_found = importlib.find_loader("chamfer2D") is not None
 if not chamfer_found:
     ## Cool trick from https://github.com/chrdiller
     from torch.utils.cpp_extension import load
-    chamfer = load(name="chamfer_5D",
-          sources=["chamfer_cuda.cpp",
-                   "chamfer5D.cu"])
-    print("Loaded JIT 5D CUDA chamfer distance")
+    chamfer_2D = load(name="chamfer2D",
+                  sources=[
+                      "/".join(os.path.abspath(__file__).split('/')[:-1] + ["chamfer_cuda.cpp"]),
+                      "/".join(os.path.abspath(__file__).split('/')[:-1] + ["chamfer2D.cu"]),
+                  ])
+    print("Loaded JIT 2D CUDA chamfer distance")
 
 else:
-    import chamfer_5D
-    print("Loaded compiled 5D CUDA chamfer distance")
-
+    import chamfer_2D
+    print("Loaded compiled 2D CUDA chamfer distance")
 
 # Chamfer's distance module @thibaultgroueix
 # GPU tensors only
-class chamfer_5DFunction(Function):
+class chamfer_2DFunction(Function):
     @staticmethod
     def forward(ctx, xyz1, xyz2):
         batchsize, n, _ = xyz1.size()
@@ -38,12 +39,12 @@ class chamfer_5DFunction(Function):
         idx2 = idx2.to(device)
         torch.cuda.set_device(device)
 
-        chamfer_5D.forward(xyz1, xyz2, dist1, dist2, idx1, idx2)
+        chamfer_2D.forward(xyz1, xyz2, dist1, dist2, idx1, idx2)
         ctx.save_for_backward(xyz1, xyz2, idx1, idx2)
-        return dist1, dist2
+        return dist1, dist2, idx1, idx2
 
     @staticmethod
-    def backward(ctx, graddist1, graddist2):
+    def backward(ctx, graddist1, graddist2, gradidx1, gradidx2):
         xyz1, xyz2, idx1, idx2 = ctx.saved_tensors
         graddist1 = graddist1.contiguous()
         graddist2 = graddist2.contiguous()
@@ -54,13 +55,15 @@ class chamfer_5DFunction(Function):
 
         gradxyz1 = gradxyz1.to(device)
         gradxyz2 = gradxyz2.to(device)
-        chamfer_5D.backward(xyz1, xyz2, gradxyz1, gradxyz2, graddist1, graddist2, idx1, idx2)
+        chamfer_2D.backward(
+            xyz1, xyz2, gradxyz1, gradxyz2, graddist1, graddist2, idx1, idx2
+        )
         return gradxyz1, gradxyz2
 
-class chamfer_5DDist(nn.Module):
+
+class chamfer_2DDist(nn.Module):
     def __init__(self):
-        super(chamfer_5DDist, self).__init__()
+        super(chamfer_2DDist, self).__init__()
 
     def forward(self, input1, input2):
-        return chamfer_5DFunction.apply(input1, input2)
-
+        return chamfer_2DFunction.apply(input1, input2)

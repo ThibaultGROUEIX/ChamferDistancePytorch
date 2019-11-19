@@ -1,12 +1,12 @@
-cd chamfer_2D
+cd chamfer2D
 python setup.py install
 cd ..
 
-cd chamfer_3D
+cd chamfer3D
 python setup.py install
 cd ..
 
 
-cd chamfer_5D
+cd chamfer5D
 python setup.py install
 cd ..

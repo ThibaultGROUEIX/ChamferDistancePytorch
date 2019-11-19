@@ -2,11 +2,11 @@ from setuptools import setup
 from torch.utils.cpp_extension import BuildExtension, CUDAExtension
 
 setup(
-    name='chamfer_3D',
+    name='chamfer5D',
     ext_modules=[
-        CUDAExtension('chamfer_3D', [
+        CUDAExtension('chamfer5D', [
             'chamfer_cuda.cpp',
-            'chamfer3D.cu',
+            'chamfer5D.cu',
         ]),
     ],
     cmdclass={
