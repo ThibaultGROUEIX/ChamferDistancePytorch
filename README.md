@@ -4,26 +4,32 @@ Include a **CUDA** version, and a **PYTHON** version with pytorch standard opera
 
 ### CUDA VERSION
 
-Optionally compile with `python setup.py install` or don't : it will use JIT.
+- [x] JIT compilation
+- [x] Supports multi-gpu
+- [x] 2D  point clouds.
+- [x] 3D  point clouds.
+- [x] 5D  point clouds.
+- [x] Contiguous() safe.
 
-Supports multi-gpu
-Build for 2D, 3D, 5D  point clouds.
+
 
 ### Python Version
 
-Supports any dimension
+- [x]  Supports any dimension
+
+
 
 ### Usage
 
 ```python
 import torch
-import dist_chamfer_idx as ext
-distChamfer = ext.chamferDist()
+import chamfer3D.dist_chamfer_3D as cham
+chamLoss = cham.chamfer_3DDist()
 p1 = torch.rand(32, 1000, 3).cuda()
 p2 = torch.rand(32, 2000, 3).cuda()
 points1 = Variable(p1, requires_grad=True)
 points2 = Variable(p2)
-dist1, dist2, idx1, idx2= distChamfer(points1, points2)
+dist1, dist2, idx1, idx2 = chamLoss(points1, points2)
 ```
 
 
@@ -34,20 +40,33 @@ dist1, dist2, idx1, idx2= distChamfer(points1, points2)
 git submodule add https://github.com/ThibaultGROUEIX/ChamferDistancePytorch
 ```
 
-### Benchmark: 1000 * [forward + backward] pass
 
-* p1 : 32 x 2000 x 3
-* p2 : 32 x 1000 x 3
 
-|  | Timing (sec)    | Memory (GB)     |
-| ---------- | -------- | ------- |
-| **Cuda**     | **4** | **0.5** |
-| **Python**     | 30 | 1  |
+### Benchmark:  [forward + backward] pass
+- [x] CUDA 10.1, NVIDIA 435, Pytorch 1.4
+- [x] p1 : 32 x 2000 x dim
+- [x] p2 : 32 x 1000 x dim
+
+|  *Timing (sec * 1000)*  | 2D | 3D | 5D |
+| ---------- | -------- | ------- | ------- |
+| **Cuda Compiled**     | **1.2** | 1.4 |1.8 |
+| **Cuda JIT**     | 1.3 | **1.4** |**1.5** |
+| **Python**     | 37 | 37 | 37 |
+
+
+| *Memory (MB)* |  2D | 3D | 5D |
+| ---------- | -------- | ------- | ------- |
+| **Cuda Compiled**     | 529 | 529  | 549 |
+| **Cuda JIT**     | **520** | **529** |**549** |
+| **Python**     | 2495 | 2495 | 2495 |
+
 
 
 ### What is the chamfer distance ? 
 
 [Stanford course](http://graphics.stanford.edu/courses/cs468-17-spring/LectureSlides/L14%20-%203d%20deep%20learning%20on%20point%20cloud%20representation%20(analysis).pdf) on 3D deep Learning
+
+
 
 ### Aknowledgment 
 
@@ -55,12 +74,24 @@ Original backbone from [Fei Xia](https://github.com/fxia22/pointGAN/blob/master/
 
 JIT cool trick from [Christian Miller](https://github.com/chrdiller)
 
-### Troubleshoot:
+### Troubleshoot
 
-- `undefined symbol: Zxxxxxxxxxxxxxxxxx `:
+- `Undefined symbol: Zxxxxxxxxxxxxxxxxx `:
 
 --> Fix: Make sure to `import torch` before you `import chamfer`.
 --> Use pytorch.version >= 1.1.0
+
+-  [RuntimeError: Ninja is required to load C++ extension](https://github.com/zhanghang1989/PyTorch-Encoding/issues/167)
+
+```shell
+wget https://github.com/ninja-build/ninja/releases/download/v1.8.2/ninja-linux.zip
+sudo unzip ninja-linux.zip -d /usr/local/bin/
+sudo update-alternatives --install /usr/bin/ninja ninja /usr/local/bin/ninja 1 --force 
+```
+
+
+
+
 
 #### TODO:
 

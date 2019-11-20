@@ -66,4 +66,6 @@ class chamfer_2DDist(nn.Module):
         super(chamfer_2DDist, self).__init__()
 
     def forward(self, input1, input2):
+        input1 = input1.contiguous()
+        input2 = input2.contiguous()
         return chamfer_2DFunction.apply(input1, input2)
