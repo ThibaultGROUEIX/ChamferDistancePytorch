@@ -2,6 +2,10 @@
 
 Include a **CUDA** version, and a **PYTHON** version with pytorch standard operations.
 
+- [x] F - Score  
+
+
+
 ### CUDA VERSION
 
 - [x] JIT compilation
@@ -22,14 +26,12 @@ Include a **CUDA** version, and a **PYTHON** version with pytorch standard opera
 ### Usage
 
 ```python
-import torch
-import chamfer3D.dist_chamfer_3D as cham
-chamLoss = cham.chamfer_3DDist()
-p1 = torch.rand(32, 1000, 3).cuda()
-p2 = torch.rand(32, 2000, 3).cuda()
-points1 = Variable(p1, requires_grad=True)
-points2 = Variable(p2)
+import torch, chamfer3D.dist_chamfer_3D, fscore
+chamLoss = chamfer3D.dist_chamfer_3D.chamfer_3DDist()
+points1 = torch.rand(32, 1000, 3).cuda()
+points2 = torch.rand(32, 2000, 3, requires_grad=True).cuda()
 dist1, dist2, idx1, idx2 = chamLoss(points1, points2)
+f_score, precision, recall = fscore.fscore(dist1, dist2)
 ```
 
 
