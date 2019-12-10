@@ -6,6 +6,8 @@ import os
 chamfer_found = importlib.find_loader("chamfer_3D") is not None
 if not chamfer_found:
     ## Cool trick from https://github.com/chrdiller
+    print("Jitting Chamfer 3D")
+
     from torch.utils.cpp_extension import load
     chamfer_3D = load(name="chamfer_3D",
           sources=[
