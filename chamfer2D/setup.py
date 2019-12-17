@@ -5,8 +5,8 @@ setup(
     name='chamfer_2D',
     ext_modules=[
         CUDAExtension('chamfer_2D', [
-            'chamfer_cuda.cpp',
-            'chamfer2D.cu',
+            "/".join(__file__.split('/')[:-1] + ['chamfer_cuda.cpp']),
+            "/".join(__file__.split('/')[:-1] + ['chamfer2D.cu']),
         ]),
     ],
     cmdclass={
