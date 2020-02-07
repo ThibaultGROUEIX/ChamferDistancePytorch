@@ -74,7 +74,7 @@ git submodule add https://github.com/ThibaultGROUEIX/ChamferDistancePytorch
 
 Original backbone from [Fei Xia](https://github.com/fxia22/pointGAN/blob/master/nndistance/src/nnd_cuda.cu).
 
-JIT cool trick from [Christian Miller](https://github.com/chrdiller)
+JIT cool trick from [Christian Diller](https://github.com/chrdiller)
 
 ### Troubleshoot
 
