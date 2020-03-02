@@ -1,6 +1,7 @@
 # Pytorch Chamfer Distance.
 
 Include a **CUDA** version, and a **PYTHON** version with pytorch standard operations.
+NB : In this depo, dist1 and dist2 are squared pointcloud euclidean distances, so you should adapt thresholds accordingly.
 
 - [x] F - Score  
 
