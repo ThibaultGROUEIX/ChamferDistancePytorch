@@ -8,13 +8,16 @@ chamfer_found = importlib.find_loader("chamfer_6D") is not None
 if not chamfer_found:
     ## Cool trick from https://github.com/chrdiller
     print("Jitting Chamfer 6D")
+    cur_path = os.path.dirname(os.path.abspath(__file__))
+    build_path = cur_path.replace('chamfer6D', 'tmp')
+    os.makedirs(build_path, exist_ok=True)
 
     from torch.utils.cpp_extension import load
     chamfer_6D = load(name="chamfer_6D",
                       sources=[
                           "/".join(os.path.abspath(__file__).split('/')[:-1] + ["chamfer_cuda.cpp"]),
                           "/".join(os.path.abspath(__file__).split('/')[:-1] + ["chamfer6D.cu"]),
-                      ])
+                      ], build_directory=build_path)
     print("Loaded JIT 6D CUDA chamfer distance")
 
 else:
