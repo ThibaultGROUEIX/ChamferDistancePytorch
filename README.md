@@ -1,3 +1,5 @@
+`pip install torch ninja`
+
 # Pytorch Chamfer Distance.
 
 Include a **CUDA** version, and a **PYTHON** version with pytorch standard operations.
